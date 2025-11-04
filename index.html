@@ -1,42 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Faizan AI Bot</title>
+  <meta charset="utf-8" />
+  <title>Faizan AI Bot 🤖</title>
   <style>
-    body { font-family: Arial; background: #f7f7f7; display: flex; flex-direction: column; align-items: center; }
-    #chat { width: 90%; max-width: 600px; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .msg { margin: 10px 0; }
-    .user { color: blue; }
-    .bot { color: green; }
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background: #e8eaed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin: 20px;
+      color: #333;
+    }
+
+    #chat {
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      margin: 10px 0;
+      display: flex;
+      align-items: flex-start;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .user {
+      justify-content: flex-end;
+    }
+
+    .user .bubble {
+      background: #0078ff;
+      color: white;
+      border-radius: 18px 18px 0 18px;
+      padding: 10px 15px;
+      max-width: 75%;
+      word-wrap: break-word;
+    }
+
+    .bot {
+      justify-content: flex-start;
+    }
+
+    .bot .bubble {
+      background: #f1f0f0;
+      color: #333;
+      border-radius: 18px 18px 18px 0;
+      padding: 10px 15px;
+      max-width: 75%;
+      word-wrap: break-word;
+    }
+
+    #inputArea {
+      width: 90%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+    }
+
+    #input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      outline: none;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    #input:focus {
+      border-color: #0078ff;
+      box-shadow: 0 0 5px rgba(0, 120, 255, 0.3);
+    }
+
+    #sendBtn {
+      background: #0078ff;
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+
+    #sendBtn:hover {
+      background: #005fcc;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
   <h1>🤖 Faizan AI Bot</h1>
+
   <div id="chat"></div>
-  <input id="input" placeholder="Ask me about Faizan..." style="width:80%;padding:10px;margin-top:10px;">
-  <button onclick="send()">Send</button>
+
+  <div id="inputArea">
+    <input id="input" placeholder="Ask me about Faizan..." />
+    <button id="sendBtn">➤</button>
+  </div>
 
   <script>
-    async function send() {
-      const input = document.getElementById('input');
-      const chat = document.getElementById('chat');
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("sendBtn");
+
+    async function sendMessage() {
       const msg = input.value.trim();
       if (!msg) return;
 
-      chat.innerHTML += `<div class='msg user'><b>You:</b> ${msg}</div>`;
-      input.value = '';
+      addMessage("user", msg);
+      input.value = "";
 
-      const res = await fetch('https://faizan-bot-worker.fai1ggj.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
-      });
+      try {
+        const res = await fetch("https://faizan-bot-worker.fai1ggj.workers.dev/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg }),
+        });
 
-      const data = await res.json();
-      chat.innerHTML += `<div class='msg bot'><b>Faizan Bot:</b> ${data.reply}</div>`;
+        const data = await res.json();
+        addMessage("bot", data.reply || "Sorry, I couldn't process that.");
+      } catch (err) {
+        addMessage("bot", "⚠️ Error: Unable to connect to server.");
+      }
+    }
+
+    function addMessage(sender, text) {
+      const div = document.createElement("div");
+      div.className = `msg ${sender}`;
+      div.innerHTML = `<div class="bubble">${text}</div>`;
+      chat.appendChild(div);
       chat.scrollTop = chat.scrollHeight;
     }
+
+    sendBtn.addEventListener("click", sendMessage);
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
   </script>
 </body>
 </html>
