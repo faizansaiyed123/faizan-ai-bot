@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Faizan AI Bot</title>
+  <style>
+    body { font-family: Arial; background: #f7f7f7; display: flex; flex-direction: column; align-items: center; }
+    #chat { width: 90%; max-width: 600px; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .msg { margin: 10px 0; }
+    .user { color: blue; }
+    .bot { color: green; }
+  </style>
+</head>
+<body>
+  <h1>🤖 Faizan AI Bot</h1>
+  <div id="chat"></div>
+  <input id="input" placeholder="Ask me about Faizan..." style="width:80%;padding:10px;margin-top:10px;">
+  <button onclick="send()">Send</button>
+
+  <script>
+    async function send() {
+      const input = document.getElementById('input');
+      const chat = document.getElementById('chat');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      chat.innerHTML += `<div class='msg user'><b>You:</b> ${msg}</div>`;
+      input.value = '';
+
+      const res = await fetch('https://faizan-bot-worker.fai1ggj.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+
+      const data = await res.json();
+      chat.innerHTML += `<div class='msg bot'><b>Faizan Bot:</b> ${data.reply}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>
