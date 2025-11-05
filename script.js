@@ -8,24 +8,30 @@ function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
 
-  // Step 1️⃣: Convert Markdown-style links [text](url)
+  // --- Decode any accidental HTML entities like %3C/a%3E ---
+  try {
+    text = decodeURIComponent(text);
+  } catch (_) {
+    // if it’s not URI-encoded, ignore
+  }
+
+  // --- Convert markdown links [text](url) ---
   let html = text.replace(
     /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
   );
 
-  // Step 2️⃣: Convert any remaining raw URLs
+  // --- Convert plain URLs ---
   html = html.replace(
     /(?<!href=")(https?:\/\/[^\s]+)/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
   );
 
-  // Step 3️⃣: Render as HTML
   msg.innerHTML = html;
-
   chatBox.appendChild(msg);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
+
 
 async function sendMessage() {
   const userText = input.value.trim();
