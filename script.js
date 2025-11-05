@@ -8,20 +8,18 @@ function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
 
-  // --- Decode any accidental HTML entities like %3C/a%3E ---
+  // Decode any escaped characters (just in case)
   try {
     text = decodeURIComponent(text);
-  } catch (_) {
-    // if it’s not URI-encoded, ignore
-  }
+  } catch (_) {}
 
-  // --- Convert markdown links [text](url) ---
+  // 1️⃣ Convert markdown links [label](url)
   let html = text.replace(
     /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
   );
 
-  // --- Convert plain URLs ---
+  // 2️⃣ Convert plain URLs
   html = html.replace(
     /(?<!href=")(https?:\/\/[^\s]+)/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
