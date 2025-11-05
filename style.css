@@ -1,182 +1,72 @@
-/* General Layout */
-body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: #ffffff;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+/* Add these styles to your existing style.css file */
 
-/* Chat Container */
-.chat-container {
-  background: rgba(30, 41, 59, 0.85);
-  border-radius: 20px;
-  width: 420px;
-  max-width: 90%;
-  height: 85vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  animation: fadeIn 0.6s ease-in-out;
-}
-
-/* Header */
-.header {
-  background: linear-gradient(90deg, #0ea5e9, #3b82f6);
-  padding: 18px;
-  text-align: center;
-  color: white;
-}
-
-.header h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.header p {
-  margin: 6px 0 0;
-  font-size: 14px;
-  color: #f1f5f9;
-}
-
-/* Chat Box */
-.chat-box {
-  flex: 1;
-  padding: 18px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  scroll-behavior: smooth;
-}
-
-.message.bot a {
-  color: #0073e6;
-  text-decoration: underline;
-  word-break: break-word;
-}
-.message.bot a:hover {
-  text-decoration: none;
-}
-
-/* Message Bubbles */
-.message {
-  padding: 12px 16px;
-  border-radius: 14px;
-  max-width: 80%;
-  word-wrap: break-word;
-  font-size: 15px;
-  line-height: 1.4;
-  animation: slideUp 0.3s ease;
-}
-
-.user {
-  background: #3b82f6;
-  align-self: flex-end;
-  border-bottom-right-radius: 4px;
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
-}
-
-.bot {
-  background: #334155;
-  align-self: flex-start;
-  border-bottom-left-radius: 4px;
-  color: #f8fafc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* Input Section */
-.input-container {
-  display: flex;
-  border-top: 1px solid #475569;
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(10px);
-}
-
-input {
-  flex: 1;
+/* Resume Download Button Container */
+.message.bot .resume-download-btn {
+  background: linear-gradient(90deg, #10b981, #059669);
   border: none;
-  padding: 14px;
-  background: transparent;
-  color: white;
-  font-size: 15px;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-input::placeholder {
-  color: #94a3b8;
-}
-
-input:focus {
-  background: rgba(30, 41, 59, 0.7);
-}
-
-/* Send Button */
-button {
-  background: linear-gradient(90deg, #0ea5e9, #3b82f6);
-  border: none;
-  padding: 14px 20px;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
   color: white;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   transition: all 0.3s ease;
-  border-left: 1px solid #475569;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+  font-family: 'Poppins', sans-serif;
 }
 
-button:hover {
-  background: linear-gradient(90deg, #0284c7, #2563eb);
-  box-shadow: 0 0 10px rgba(14, 165, 233, 0.6);
+.message.bot .resume-download-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #059669, #047857);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
   transform: scale(1.05);
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+.message.bot .resume-download-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.message.bot .resume-download-btn:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
-/* Scrollbar */
-.chat-box::-webkit-scrollbar {
-  width: 6px;
-}
-.chat-box::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
+/* Make sure bot messages with buttons have proper padding */
+.message.bot:has(.resume-download-btn) {
+  padding: 10px 12px;
+  background: transparent;
+  box-shadow: none;
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-  .chat-container {
-    width: 95%;
-    height: 90vh;
-  }
-
-  .header h2 {
-    font-size: 18px;
-  }
-
-  button {
-    padding: 12px 16px;
-    font-size: 14px;
-  }
-
-  input {
-    font-size: 14px;
-  }
+/* Smooth scrolling for chat box */
+.chat-box {
+  scroll-behavior: smooth;
 }
 
+/* Enhanced link styling in bot messages */
+.message.bot a {
+  color: #60a5fa;
+  text-decoration: underline;
+  word-break: break-word;
+  transition: color 0.2s ease;
+}
+
+.message.bot a:hover {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+/* Strong/bold text in messages */
+.message strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+/* Loading state animation for typing indicator */
+.message.bot:has-text("Typing...") {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
