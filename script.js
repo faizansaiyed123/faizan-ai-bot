@@ -7,10 +7,20 @@ const sendBtn = document.getElementById("send-btn");
 function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
-  msg.textContent = text;
+
+  // Convert URLs to clickable links
+  const linkified = text.replace(
+    /(https?:\/\/[^\s]+)/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+
+  // Allow basic HTML (like links)
+  msg.innerHTML = linkified;
+
   chatBox.appendChild(msg);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
+
 
 async function sendMessage() {
   const userText = input.value.trim();
