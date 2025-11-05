@@ -8,19 +8,24 @@ function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
 
-  // Convert URLs to clickable links
-  const linkified = text.replace(
-    /(https?:\/\/[^\s]+)/g,
+  // Step 1️⃣: Convert Markdown-style links [text](url)
+  let html = text.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+
+  // Step 2️⃣: Convert any remaining raw URLs
+  html = html.replace(
+    /(?<!href=")(https?:\/\/[^\s]+)/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
   );
 
-  // Allow basic HTML (like links)
-  msg.innerHTML = linkified;
+  // Step 3️⃣: Render as HTML
+  msg.innerHTML = html;
 
   chatBox.appendChild(msg);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
-
 
 async function sendMessage() {
   const userText = input.value.trim();
