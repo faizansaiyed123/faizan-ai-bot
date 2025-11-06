@@ -97,15 +97,8 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Strong/bold text in messages */
-.message strong {
-  font-weight: 600;
-  color: inherit;
-}
-
-/* Resume Download Button Container */
-.message.bot .resume-download-btn {
-  background: linear-gradient(90deg, #10b981, #059669);
+/* Resume Buttons */
+.resume-download-btn {
   border: none;
   padding: 10px 16px;
   border-radius: 8px;
@@ -118,22 +111,6 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-.message.bot .resume-download-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #059669, #047857);
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
-  transform: scale(1.05);
-}
-
-.message.bot .resume-download-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.message.bot .resume-download-btn:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-/* Make sure bot messages with buttons have proper padding */
 .message.bot:has(.resume-download-btn) {
   padding: 10px 12px;
   background: transparent;
@@ -197,48 +174,25 @@ button:hover {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
 /* Scrollbar */
 .chat-box::-webkit-scrollbar {
   width: 6px;
 }
-
 .chat-box::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 480px) {
   .chat-container {
     width: 95%;
     height: 90vh;
   }
 
-  .header h2 {
-    font-size: 18px;
-  }
-
-  button {
-    padding: 12px 16px;
-    font-size: 14px;
-  }
-
-  input {
-    font-size: 14px;
-  }
-
-  .message {
-    font-size: 14px;
-    max-width: 85%;
-  }
-
-  .message.bot .resume-download-btn {
-    font-size: 13px;
-    padding: 8px 14px;
-  }
+  .header h2 { font-size: 18px; }
+  button { padding: 12px 16px; font-size: 14px; }
+  input { font-size: 14px; }
+  .message { font-size: 14px; max-width: 85%; }
+  .resume-download-btn { font-size: 13px; padding: 8px 14px; }
 }
