@@ -97,6 +97,19 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* Resume Preview Container - Full Width */
+.resume-preview-container {
+  max-width: 95% !important;
+  background: #1e293b !important;
+  padding: 16px !important;
+  border: 1px solid #475569;
+}
+
+.resume-preview-container iframe {
+  display: block;
+  margin: 10px 0;
+}
+
 /* Resume Buttons */
 .resume-download-btn {
   border: none;
@@ -109,6 +122,12 @@ body {
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
   font-family: 'Poppins', sans-serif;
+}
+
+.resume-download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .message.bot:has(.resume-download-btn) {
@@ -195,4 +214,6 @@ button:hover {
   input { font-size: 14px; }
   .message { font-size: 14px; max-width: 85%; }
   .resume-download-btn { font-size: 13px; padding: 8px 14px; }
+  .resume-preview-container { max-width: 98% !important; }
+  .resume-preview-container iframe { height: 400px !important; }
 }
