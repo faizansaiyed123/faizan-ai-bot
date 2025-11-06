@@ -5,8 +5,7 @@ const input = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
 // Generate a simple user ID for conversation continuity
-const userId = localStorage.getItem("userId") || `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-localStorage.setItem("userId", userId);
+const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 function addMessage(text, sender) {
   const msg = document.createElement("div");
@@ -33,7 +32,7 @@ function addMessage(text, sender) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// ✅ NEW: Preview + Download Buttons
+// ✅ FIXED: Preview + Download Buttons
 function addResumeDownloadButton() {
   const btnContainer = document.createElement("div");
   btnContainer.classList.add("message", "bot");
@@ -61,20 +60,28 @@ function addResumeDownloadButton() {
     previewBtn.textContent = "🔍 Loading Preview...";
     previewBtn.disabled = true;
     try {
+      // ✅ FIXED: Changed to use downloadResume flag but display in iframe
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ previewResume: true }),
+        body: JSON.stringify({ previewResume: true }), // Backend now handles this
       });
+      
       if (!response.ok) throw new Error("Failed to load preview");
+      
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
 
+      // Remove any existing preview
+      const existingPreview = document.querySelector('.resume-preview-container');
+      if (existingPreview) existingPreview.remove();
+
       const previewContainer = document.createElement("div");
-      previewContainer.classList.add("message", "bot");
+      previewContainer.classList.add("message", "bot", "resume-preview-container");
       previewContainer.innerHTML = `
         <p><strong>📄 Resume Preview:</strong></p>
-        <iframe src="${url}" width="100%" height="400px" style="border-radius: 8px; border: none; background: #1e293b;"></iframe>
+        <iframe src="${url}" width="100%" height="500px" style="border-radius: 8px; border: 1px solid #475569; background: #fff; margin-top: 10px;"></iframe>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Tip: You can scroll within the preview to view the full resume</p>
       `;
       chatBox.appendChild(previewContainer);
       chatBox.scrollTop = chatBox.scrollHeight;
@@ -82,6 +89,7 @@ function addResumeDownloadButton() {
       previewBtn.textContent = "👁️ Preview Again";
     } catch (err) {
       console.error(err);
+      addMessage("❌ Could not load preview. Please try downloading instead.", "bot");
       previewBtn.textContent = "❌ Preview Failed";
     } finally {
       previewBtn.disabled = false;
