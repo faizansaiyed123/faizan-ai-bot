@@ -33,34 +33,71 @@ function addMessage(text, sender) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// ✅ NEW: Preview + Download Buttons
 function addResumeDownloadButton() {
   const btnContainer = document.createElement("div");
   btnContainer.classList.add("message", "bot");
   btnContainer.style.display = "flex";
   btnContainer.style.alignItems = "center";
   btnContainer.style.gap = "10px";
+  btnContainer.style.flexWrap = "wrap";
 
+  // 👁️ Preview Button
+  const previewBtn = document.createElement("button");
+  previewBtn.textContent = "👁️ Preview Resume";
+  previewBtn.classList.add("resume-download-btn");
+  previewBtn.style.background = "linear-gradient(90deg, #3b82f6, #2563eb)";
+
+  previewBtn.addEventListener("mouseenter", () => {
+    previewBtn.style.background = "linear-gradient(90deg, #2563eb, #1d4ed8)";
+    previewBtn.style.transform = "scale(1.05)";
+  });
+  previewBtn.addEventListener("mouseleave", () => {
+    previewBtn.style.background = "linear-gradient(90deg, #3b82f6, #2563eb)";
+    previewBtn.style.transform = "scale(1)";
+  });
+
+  previewBtn.addEventListener("click", async () => {
+    previewBtn.textContent = "🔍 Loading Preview...";
+    previewBtn.disabled = true;
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ previewResume: true }),
+      });
+      if (!response.ok) throw new Error("Failed to load preview");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const previewContainer = document.createElement("div");
+      previewContainer.classList.add("message", "bot");
+      previewContainer.innerHTML = `
+        <p><strong>📄 Resume Preview:</strong></p>
+        <iframe src="${url}" width="100%" height="400px" style="border-radius: 8px; border: none; background: #1e293b;"></iframe>
+      `;
+      chatBox.appendChild(previewContainer);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      previewBtn.textContent = "👁️ Preview Again";
+    } catch (err) {
+      console.error(err);
+      previewBtn.textContent = "❌ Preview Failed";
+    } finally {
+      previewBtn.disabled = false;
+    }
+  });
+
+  // 💾 Download Button
   const downloadBtn = document.createElement("button");
   downloadBtn.textContent = "📄 Download Resume";
   downloadBtn.classList.add("resume-download-btn");
-  downloadBtn.style.cssText = `
-    background: linear-gradient(90deg, #10b981, #059669);
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
-  `;
+  downloadBtn.style.background = "linear-gradient(90deg, #10b981, #059669)";
 
   downloadBtn.addEventListener("mouseenter", () => {
     downloadBtn.style.background = "linear-gradient(90deg, #059669, #047857)";
     downloadBtn.style.transform = "scale(1.05)";
   });
-
   downloadBtn.addEventListener("mouseleave", () => {
     downloadBtn.style.background = "linear-gradient(90deg, #10b981, #059669)";
     downloadBtn.style.transform = "scale(1)";
@@ -69,18 +106,13 @@ function addResumeDownloadButton() {
   downloadBtn.addEventListener("click", async () => {
     downloadBtn.textContent = "⏳ Downloading...";
     downloadBtn.disabled = true;
-
     try {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ downloadResume: true }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to download resume");
-      }
-
+      if (!response.ok) throw new Error("Failed to download resume");
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -97,7 +129,7 @@ function addResumeDownloadButton() {
         downloadBtn.disabled = false;
       }, 2000);
     } catch (err) {
-      console.error("Resume download error:", err);
+      console.error(err);
       downloadBtn.textContent = "❌ Download Failed";
       setTimeout(() => {
         downloadBtn.textContent = "📄 Try Again";
@@ -106,6 +138,7 @@ function addResumeDownloadButton() {
     }
   });
 
+  btnContainer.appendChild(previewBtn);
   btnContainer.appendChild(downloadBtn);
   chatBox.appendChild(btnContainer);
   chatBox.scrollTop = chatBox.scrollHeight;
@@ -118,7 +151,6 @@ async function sendMessage() {
   addMessage(userText, "user");
   input.value = "";
 
-  // Typing animation
   const typingMsg = document.createElement("div");
   typingMsg.classList.add("message", "bot");
   typingMsg.innerHTML = "Typing...";
@@ -129,27 +161,19 @@ async function sendMessage() {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        message: userText,
-        userId: userId 
-      }),
+      body: JSON.stringify({ message: userText, userId }),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
 
     const data = await response.json();
     typingMsg.remove();
-    
+
     addMessage(data.reply || "Sorry, I couldn't understand that.", "bot");
-    
-    // If resume download is available, show the download button
-    if (data.showResumeDownload) {
-      addResumeDownloadButton();
-    }
+
+    if (data.showResumeDownload) addResumeDownloadButton();
   } catch (err) {
-    console.error("Chat error:", err);
+    console.error(err);
     typingMsg.remove();
     addMessage("⚠️ Error connecting to Faizan's AI. Try again.", "bot");
   }
@@ -160,7 +184,6 @@ input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
-// Welcome message on load
 window.addEventListener("load", () => {
   setTimeout(() => {
     addMessage("Hi! I'm Faizan's AI assistant. Feel free to ask me anything about Faizan's skills, projects, or experience! 😊", "bot");
