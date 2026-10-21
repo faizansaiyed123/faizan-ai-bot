@@ -4,7 +4,6 @@ const chatBox = document.getElementById("chat-box");
 const input = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 
-// Generate a simple user ID for conversation continuity
 const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 function addMessage(text, sender) {
@@ -32,7 +31,6 @@ function addMessage(text, sender) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// ✅ FIXED: Preview + Download Buttons
 function addResumeDownloadButton() {
   const btnContainer = document.createElement("div");
   btnContainer.classList.add("message", "bot");
@@ -41,7 +39,6 @@ function addResumeDownloadButton() {
   btnContainer.style.gap = "10px";
   btnContainer.style.flexWrap = "wrap";
 
-  // 👁️ Preview Button
   const previewBtn = document.createElement("button");
   previewBtn.textContent = "👁️ Preview Resume";
   previewBtn.classList.add("resume-download-btn");
@@ -60,11 +57,10 @@ function addResumeDownloadButton() {
     previewBtn.textContent = "🔍 Loading Preview...";
     previewBtn.disabled = true;
     try {
-      // ✅ FIXED: Changed to use downloadResume flag but display in iframe
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ previewResume: true }), // Backend now handles this
+        body: JSON.stringify({ previewResume: true }),
       });
       
       if (!response.ok) throw new Error("Failed to load preview");
@@ -96,7 +92,6 @@ function addResumeDownloadButton() {
     }
   });
 
-  // 💾 Download Button
   const downloadBtn = document.createElement("button");
   downloadBtn.textContent = "📄 Download Resume";
   downloadBtn.classList.add("resume-download-btn");
